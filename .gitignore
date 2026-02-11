@@ -23,3 +23,9 @@
 /app/Config/core.php
 /app/Config/database.php
 /vendors/*
+
+.phpunit.result.cache
+/vendor
+
+.env
+.DS_Store
