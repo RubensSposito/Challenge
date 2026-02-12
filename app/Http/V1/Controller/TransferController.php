@@ -22,21 +22,21 @@ final class TransferController
             $data = $request->getAttribute('json');
 
             $transfer = $this->useCase->executar(
-                payerId: (int) $data['payer'],
-                payeeId: (int) $data['payee'],
-                valorDecimal: (string) $data['value']
+                valor: (string) $data['value'],
+                payer: (int) $data['payer'],
+                payee: (int) $data['payee'],
             );
 
             return new Response(
                 201,
                 ['Content-Type' => 'application/json'],
                 json_encode([
-                    'id' => $transfer->id,
+                    'id' => $transfer['id'],
                     'status' => 'Transferência realizada com sucesso',
-                    'valor' => $transfer->valor->toDecimal(),
-                    'payer' => $transfer->payerId,
-                    'payee' => $transfer->payeeId,
-                    'criadoEm' => $transfer->criadoEm
+                    'valor' => $transfer['valor'],
+                    'payer' => $transfer['payer'],
+                    'payee' => $transfer['payee'],
+                    'criadoEm' => $transfer['criadoEm'],
                 ])
             );
         } catch (DomainException $e) {
