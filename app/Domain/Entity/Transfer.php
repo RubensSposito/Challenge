@@ -6,7 +6,7 @@ namespace App\Domain\Entity;
 
 use App\Domain\ValueObject\Money;
 
-final class Transfer
+final class Transfer implements \JsonSerializable
 {
     public function __construct(
         public readonly int $id,
@@ -16,4 +16,16 @@ final class Transfer
         public readonly string $status,
         public readonly string $criadoEm
     ) {}
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'payer' => $this->payerId,
+            'payee' => $this->payeeId,
+            'value' => $this->valor->toDecimal(),   // mantém o contrato do desafio
+            'status' => $this->status,
+            'createdAt' => $this->criadoEm,
+        ];
+    }
 }
