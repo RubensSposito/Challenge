@@ -11,7 +11,6 @@ enum UserType: string
 
     public function podeEnviarDinheiro(): bool
     {
-        // Aqui deixo explícito que somente usuários comuns podem pagar
         return $this === self::COMMON;
     }
 }

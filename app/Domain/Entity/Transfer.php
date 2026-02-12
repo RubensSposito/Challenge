@@ -23,7 +23,7 @@ final class Transfer implements \JsonSerializable
             'id' => $this->id,
             'payer' => $this->payerId,
             'payee' => $this->payeeId,
-            'value' => $this->valor->toDecimal(),   // mantém o contrato do desafio
+            'value' => $this->valor->toDecimal(),   
             'status' => $this->status,
             'createdAt' => $this->criadoEm,
         ];

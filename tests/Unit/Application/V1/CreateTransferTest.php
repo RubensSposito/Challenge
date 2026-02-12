@@ -110,7 +110,7 @@ final class CreateTransferTest extends TestCase
             public function getBalanceForUpdate(int $userId): int
             {
                 return 500;
-            } // R$ 5,00
+            } 
             public function updateBalance(int $userId, int $newBalanceCents): void {}
         };
 
@@ -128,7 +128,7 @@ final class CreateTransferTest extends TestCase
         $useCase = new CreateTransfer($authorizer, $notifier, $tx, $users, $wallets, $transfers, $logger);
 
         try {
-            $useCase->executar('10.00', 4, 15); // R$ 10,00
+            $useCase->executar('10.00', 4, 15); 
             $this->fail('Era esperado DomainException (Saldo insuficiente).');
         } catch (DomainException $e) {
             $this->assertSame('Saldo insuficiente.', $e->getMessage());
@@ -220,7 +220,7 @@ final class CreateTransferTest extends TestCase
             public function exists(int $userId): bool
             {
                 return $userId !== 999;
-            } // payer inexistente
+            } 
             public function isMerchant(int $userId): bool
             {
                 return false;

@@ -6,6 +6,5 @@ namespace App\Domain\Contract;
 
 interface AuthorizerGateway
 {
-    // Aqui eu consulto o serviço externo antes de efetivar a transferência
     public function autorizar(): bool;
 }
