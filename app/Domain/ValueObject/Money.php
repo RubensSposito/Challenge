@@ -41,6 +41,11 @@ final class Money
         return $this->valorDecimal;
     }
 
+    public function toCents(): int
+    {
+        return (int) bcmul($this->valorDecimal, '100', 0);
+    }
+
     public function maiorQue(Money $outro): bool
     {
         return (\bccomp($this->valorDecimal, $outro->valorDecimal, 2) === 1);
