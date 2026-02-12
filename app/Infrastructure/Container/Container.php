@@ -8,31 +8,25 @@ use App\Http\Router;
 use App\Infrastructure\Persistence\PdoConnectionFactory;
 use App\Infrastructure\Persistence\TransactionManager;
 
-// Contracts
 use App\Domain\Contract\UserRepository;
 use App\Domain\Contract\WalletRepository;
 use App\Domain\Contract\TransferRepository;
 use App\Domain\Contract\UserWriterRepository;
 
-// Infra repos
 use App\Infrastructure\Persistence\Repository\PdoUserRepository;
 use App\Infrastructure\Persistence\Repository\PdoWalletRepository;
 use App\Infrastructure\Persistence\Repository\PdoTransferRepository;
 use App\Infrastructure\Persistence\Repository\PdoUserWriterRepository;
 
-// External gateways
 use App\Infrastructure\External\HttpAuthorizerGateway;
 use App\Infrastructure\External\HttpNotifierGateway;
 
-// UseCases
 use App\Application\V1\UseCase\CreateTransfer;
 use App\Application\V1\UseCase\CreateUser;
 
-// Controllers
 use App\Http\V1\Controller\TransferController;
 use App\Http\V1\Controller\UserController;
 
-// Logging
 use App\Infrastructure\Logging\Logger;
 
 final class Container
@@ -47,11 +41,6 @@ final class Container
     {
         $c = new self();
 
-        /*
-        |---------------------------------------------------------
-        | Infra (DB / Transaction / Repositories)
-        |---------------------------------------------------------
-        */
         $c->set(\PDO::class, fn () => PdoConnectionFactory::fromEnv());
 
         $c->set(TransactionManager::class, fn (self $c) => new TransactionManager(
@@ -70,31 +59,17 @@ final class Container
             $c->get(\PDO::class)
         ));
 
-        // Writer repo (cadastro)
         $c->set(UserWriterRepository::class, fn (self $c) => new PdoUserWriterRepository(
             $c->get(\PDO::class)
         ));
 
-        /*
-        |---------------------------------------------------------
-        | Logging
-        |---------------------------------------------------------
-        */
+        
         $c->set(Logger::class, fn () => new Logger());
 
-        /*
-        |---------------------------------------------------------
-        | External gateways
-        |---------------------------------------------------------
-        */
         $c->set(HttpAuthorizerGateway::class, fn () => new HttpAuthorizerGateway());
         $c->set(HttpNotifierGateway::class, fn () => new HttpNotifierGateway());
 
-        /*
-        |---------------------------------------------------------
-        | Casos de uso (Application)
-        |---------------------------------------------------------
-        */
+        
         $c->set(CreateTransfer::class, fn (self $c) => new CreateTransfer(
             $c->get(HttpAuthorizerGateway::class),
             $c->get(HttpNotifierGateway::class),
@@ -109,11 +84,7 @@ final class Container
             $c->get(UserWriterRepository::class)
         ));
 
-        /*
-        |---------------------------------------------------------
-        | Controllers
-        |---------------------------------------------------------
-        */
+        
         $c->set(TransferController::class, fn (self $c) => new TransferController(
             $c->get(CreateTransfer::class)
         ));
@@ -122,11 +93,7 @@ final class Container
             $c->get(CreateUser::class)
         ));
 
-        /*
-        |---------------------------------------------------------
-        | Router + Rotas
-        |---------------------------------------------------------
-        */
+       
         $c->set(
             Router::class,
             fn (self $c) => new Router(

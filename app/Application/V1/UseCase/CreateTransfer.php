@@ -33,26 +33,21 @@ final class CreateTransfer
         int $payee
     ): Transfer {
 
-        // 1️⃣ Regra: não pode transferir para si mesmo
         if ($payer === $payee) {
             throw new DomainException('Não é permitido transferir para si mesmo.');
         }
 
-        // 2️⃣ Regra: usuários precisam existir
         if (!$this->users->exists($payer) || !$this->users->exists($payee)) {
             throw new DomainException('Usuário não encontrado.');
         }
 
-        // 3️⃣ Regra: lojista não pode enviar
         if ($this->users->isMerchant($payer)) {
             throw new DomainException('Lojista não pode realizar transferências.');
         }
 
-        // 4️⃣ Converter valor usando ValueObject
         $money = Money::fromDecimalString($valor);
         $amountCents = $money->toCents();
 
-        // 5️⃣ Autorizador externo
         if (!$this->authorizer->autorizar()) {
             throw new DomainException('Transferência não autorizada pelo serviço externo.');
         }
@@ -63,13 +58,11 @@ final class CreateTransfer
             'amountCents' => $amountCents,
         ]);
 
-        // 6️⃣ Transação com lock
         $transferId = $this->tx->transactional(function () use ($payer, $payee, $amountCents) {
 
             $payerBalance = $this->wallets->getBalanceForUpdate($payer);
             $payeeBalance = $this->wallets->getBalanceForUpdate($payee);
 
-            // 🔴 Aqui está a comparação correta
             if ($payerBalance < $amountCents) {
                 throw new DomainException('Saldo insuficiente.');
             }
@@ -87,7 +80,6 @@ final class CreateTransfer
             'amountCents' => $amountCents,
         ]);
 
-        // 7️⃣ Criar entidade de retorno
         $transfer = new Transfer(
             id: $transferId,
             payerId: $payer,
@@ -97,7 +89,6 @@ final class CreateTransfer
             criadoEm: gmdate('c')
         );
 
-        // 8️⃣ Notificação best-effort
         try {
             $this->notifier->notificar(
                 $payee,
