@@ -1,0 +1,15 @@
+parameters:
+  level: 6
+  paths:
+    - app
+  reportUnmatchedIgnoredErrors: false
+
+  ignoreErrors:
+    # Aqui eu ignoro símbolos que só existem na branch 2 (código)
+    - '#Class "App\\\\Application\\\\.*" not found#'
+    - '#Class "App\\\\Domain\\\\.*" not found#'
+    - '#Class "App\\\\Http\\\\V1\\\\.*" not found#'
+    - '#Class "App\\\\Http\\\\V2\\\\.*" not found#'
+    - '#implements unknown interface App\\\\Domain\\\\Contract\\\\.*#'
+    - '#Call to method .* on an unknown class App\\\\Application\\\\.*#'
+    - '#Caught class App\\\\Domain\\\\Exception\\\\.* not found#'
