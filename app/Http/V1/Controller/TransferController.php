@@ -12,9 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class TransferController
 {
-    public function __construct(
-        private readonly CreateTransfer $useCase
-    ) {}
+    public function __construct(private readonly CreateTransfer $useCase) {}
 
     public function create(ServerRequestInterface $request): ResponseInterface
     {
@@ -22,28 +20,22 @@ final class TransferController
             $data = $request->getAttribute('json');
 
             $transfer = $this->useCase->executar(
-                valor: (string) $data['value'],
-                payer: (int) $data['payer'],
-                payee: (int) $data['payee'],
+                valor: (string) ($data['value'] ?? ''),
+                payer: (int) ($data['payer'] ?? 0),
+                payee: (int) ($data['payee'] ?? 0),
             );
 
             return new Response(
                 201,
                 ['Content-Type' => 'application/json'],
-                json_encode([
-                    'id' => $transfer['id'],
-                    'status' => 'Transferência realizada com sucesso',
-                    'valor' => $transfer['valor'],
-                    'payer' => $transfer['payer'],
-                    'payee' => $transfer['payee'],
-                    'criadoEm' => $transfer['criadoEm'],
-                ])
+                json_encode($transfer, JSON_UNESCAPED_UNICODE)
             );
         } catch (DomainException $e) {
+            // se você já tem ExceptionMiddleware, melhor; senão:
             return new Response(
-                400,
+                422,
                 ['Content-Type' => 'application/json'],
-                json_encode(['erro' => $e->getMessage()])
+                json_encode(['erro' => $e->getMessage()], JSON_UNESCAPED_UNICODE)
             );
         }
     }
