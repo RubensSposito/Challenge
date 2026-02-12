@@ -14,7 +14,6 @@ final class Money
 
     public static function fromDecimalString(string $valor): self
     {
-        // Aqui eu valido o formato do dinheiro recebido no V1 (decimal)
         if (!preg_match('/^\d+(\.\d{1,2})?$/', $valor)) {
             throw new DomainException('Valor monetário inválido.');
         }
@@ -26,7 +25,6 @@ final class Money
         return new self(number_format((float) $valor, 2, '.', ''));
     }
 
-    // Gancho claro para V2 (centavos como inteiro)
     public static function fromCents(int $centavos): self
     {
         if ($centavos <= 0) {

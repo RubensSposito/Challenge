@@ -31,7 +31,6 @@ final class TransferController
                 json_encode($transfer, JSON_UNESCAPED_UNICODE)
             );
         } catch (DomainException $e) {
-            // se você já tem ExceptionMiddleware, melhor; senão:
             return new Response(
                 422,
                 ['Content-Type' => 'application/json'],

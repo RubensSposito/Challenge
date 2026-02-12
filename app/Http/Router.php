@@ -27,7 +27,6 @@ final class Router
      */
     public function __construct(array $routes, callable $resolver)
     {
-        // Aqui eu converto callable em Closure para armazenar na property (PHP não permite property typed callable)
         $this->resolver = $resolver instanceof \Closure ? $resolver : \Closure::fromCallable($resolver);
 
         $this->dispatcher = simpleDispatcher(function (RouteCollector $r) use ($routes): void {

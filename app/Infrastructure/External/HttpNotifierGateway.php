@@ -30,7 +30,6 @@ final class HttpNotifierGateway implements NotifierGateway
             $context
         );
 
-        // Se falhar, eu retorno false, mas NÃO quebro a transferência
         return $response !== false;
     }
 }

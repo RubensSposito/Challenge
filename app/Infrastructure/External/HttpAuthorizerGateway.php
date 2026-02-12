@@ -13,7 +13,6 @@ final class HttpAuthorizerGateway implements AuthorizerGateway
         $response = @file_get_contents('https://util.devi.tools/api/v2/authorize');
 
         if ($response === false) {
-            // Se o serviço estiver fora, eu nego por segurança
             return false;
         }
 

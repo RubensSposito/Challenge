@@ -18,7 +18,6 @@ final class ProblemDetailsMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (Throwable $e) {
-            // aqui você pode logar usando PSR-3 e incluir correlation_id
             $body = [
                 'type' => 'about:blank',
                 'title' => 'Internal Server Error',

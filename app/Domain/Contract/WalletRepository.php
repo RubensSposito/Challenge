@@ -6,6 +6,6 @@ namespace App\Domain\Contract;
 
 interface WalletRepository
 {
-    public function getBalanceForUpdate(int $userId): int; // cents
+    public function getBalanceForUpdate(int $userId): int; 
     public function updateBalance(int $userId, int $newBalanceCents): void;
 }   

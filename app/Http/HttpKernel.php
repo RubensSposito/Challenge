@@ -47,19 +47,12 @@ final class HttpKernel implements RequestHandlerInterface
         return new self($router, $creator, $middleware);
     }
 
-    /**
-     * Aqui eu crio a request a partir dos globals e inicio o pipeline.
-     * Esse método é o entrypoint para o public/index.php.
-     */
     public function handleRequest(): ResponseInterface
     {
         $request = $this->requestCreator->fromGlobals();
         return $this->handle($request);
     }
 
-    /**
-     * Aqui eu implemento o contrato do PSR-15 corretamente.
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $handler = array_reduce(
