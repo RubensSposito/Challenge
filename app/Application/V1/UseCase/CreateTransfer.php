@@ -8,7 +8,6 @@ use App\Domain\Contract\AuthorizerGateway;
 use App\Domain\Contract\NotifierGateway;
 use App\Domain\Entity\Transfer;
 use App\Domain\Exception\RegraNegocioException;
-use App\Domain\Exception\SaldoInsuficienteException;
 use App\Domain\ValueObject\Money;
 
 final class CreateTransfer
@@ -19,38 +18,31 @@ final class CreateTransfer
     ) {}
 
     public function executar(
-        int $payerId,
-        int $payeeId,
-        string $valorDecimal
+        string $valor,
+        int $payer,
+        int $payee
     ): Transfer {
-        // Aqui eu simulo regras principais (persistência entra depois)
-        if ($payerId === $payeeId) {
+        if ($payer === $payee) {
             throw new RegraNegocioException('Pagador e recebedor não podem ser o mesmo usuário.');
         }
 
-        // Valor
-        $valor = Money::fromDecimalString($valorDecimal);
+        $money = Money::fromDecimalString($valor);
 
-        // Antes de qualquer alteração, eu consulto o serviço autorizador
         if (!$this->authorizer->autorizar()) {
             throw new RegraNegocioException('Transferência não autorizada pelo serviço externo.');
         }
 
-        // Aqui, no MVP, eu simulo sucesso da transferência
         $transfer = new Transfer(
             id: rand(1, 9999),
-            payerId: $payerId,
-            payeeId: $payeeId,
-            valor: $valor,
+            payerId: $payer,
+            payeeId: $payee,
+            valor: $money,
             status: 'completed',
             criadoEm: gmdate('c')
         );
 
-        // Notificação é efeito colateral: falha não reverte a operação
-        $this->notifier->notificar(
-            $payeeId,
-            'Você recebeu uma transferência.'
-        );
+        // notificação best-effort (se falhar, não reverte)
+        $this->notifier->notificar($payee, 'Você recebeu uma transferência.');
 
         return $transfer;
     }
